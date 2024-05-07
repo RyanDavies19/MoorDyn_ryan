@@ -38,14 +38,7 @@
 
 #include "kiss_fftr.h"  // used for any wave kinematics functions
 
-#ifdef OSX
- #include <sys/uio.h>
-#elif defined LINUX
-
-#else
- #include <windows.h>  // these are for guicon function RedirectIOToConsole
- #include <io.h>
-#endif
+#include <sys/uio.h>
 
 #include <stdio.h>
 #include <fcntl.h>

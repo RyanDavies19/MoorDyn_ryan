@@ -19,7 +19,12 @@
 
 #ifdef MoorDyn_EXPORTS     // this is set as a preprocessor definition!!!
 	#ifndef LINUX
-		#define DECLDIR __declspec(dllexport)
+
+        #ifndef OSX
+		    #define DECLDIR __declspec(dllexport)
+        #else
+            #define DECLDIR
+        #endif
 	#else
 		#define DECLDIR 
 	#endif
@@ -31,13 +36,6 @@
 extern "C"
 {
 #endif
-
-#ifndef OSX
-#ifndef LINUX
- #include <Windows.h>
-#endif
-#endif
-
 
 
 //int DECLDIR LinesInit(double X[], double XD[]);     // initialization function for platform-centric coupling
