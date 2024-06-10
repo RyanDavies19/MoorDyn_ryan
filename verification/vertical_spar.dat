@@ -1,0 +1,52 @@
+Case from feburary tank testing. Vertical spar buoy with two catenary mooring chains. 
+---------------------- LINE TYPES --------------------------------------------------
+TypeName      Diam     Mass/m     EA     BA/-zeta     EI        Cd      Ca      CdAx    CaAx
+(name)        (m)      (kg/m)     (N)    (N-s/-)    (N-m^2)     (-)     (-)     (-)     (-)
+chain1        0.8400   8242  1.922e+09 -1.000e+00 0.000e+00   1.200   1.000   0.20    0.00   
+--------------------- ROD TYPES -----------------------------------------------------
+TypeName      Diam     Mass/m       Cd     Ca      CdEnd    CaEnd
+(name)        (m)      (kg/m)       (-)    (-)     (-)      (-)
+spar           22.8    1.36E+05    0.8    1.0      0.6     0.6
+spine          0.9525    5.59E+03    0      0        0       0
+ballast        20.02536  2.36E+06    0      0        0       0
+----------------------- BODIES ------------------------------------------------------
+ID   Attachment    X0     Y0     Z0     r0      p0     y0     Mass          CG*          I*      Volume   CdA*   Ca*
+(#)     (-)        (m)    (m)    (m)   (deg)   (deg)  (deg)   (kg)          (m)         (kg-m^2)  (m^3)   (m^2)  (-)
+1     Coupled     0.00      0.00   -5.25   0.00   0.00   0.00   0.0000e+00  0.00|0.00|0.00 0.000e+00   0.00   0.00  0.00
+---------------------- RODS ---------------------------------------------------------
+ID   RodType  Attachment  Xa    Ya    Za         Xb    Yb    Zb    NumSegs  RodOutputs
+(#)  (name)    (#/key)    (m)   (m)   (m)        (m)   (m)   (m)     (-)       (-)
+1      spar     Body1     0      0    -100    0    0    15.8           5        -
+2      spine    Body1     0      0    -99     0    0    14.8           5         -
+3      ballast  Body1     0      0    -93     0    0    -84     1         -
+---------------------- POINTS -------------------------------------------------------
+ID  Attachment     X       Y       Z           Mass  Volume  CdA    Ca
+(#)   (-)         (m)     (m)     (m)          (kg)  (m^3)  (m^2)   (-)
+1    Body1        -11.40   0.0    -13.15      0.00   0.00   0.00   0.00
+2    Body1         11.40   0.0    -13.15      0.00   0.00   0.00   0.00
+3    Fixed       -500.00     0    -260.00     0.00   0.00   0.00   0.00
+4    Fixed        500.00     0    -260.00     0.00   0.00   0.00   0.00
+---------------------- LINES --------------------------------------------------------
+ID    LineType      AttachA  AttachB  UnstrLen  NumSegs  LineOutputs
+(#)    (name)        (#)      (#)       (m)       (-)     (-)
+1    chain1           3        1        550      40       -
+2    chain1           4        2        550      40       -
+---------------------- OPTIONS ------------------------------------------------------
+2        writeLog     - Write a log file
+0.001            dtM
+260              WtrDpth
+1000             WtrDnsty
+3000000.0        kb
+300000.0         cb
+2.0              CdScaleIC       - factor by which to scale drag coefficients during dynamic relaxation IC gen
+0.015            threshIC     - threshold for IC convergence
+0.0             TmaxIC       - threshold for IC convergence
+10.0              dtIC         - Time lapse between convergence tests (s)
+0.1              dtOut
+----------------------- OUTPUTS -----------------------------------------------------
+Fairten1
+FairTen2
+Body1PZ
+Body1PX
+Body1RY
+--------------------- need this line ------------------------------------------------
