@@ -387,7 +387,8 @@ class load_inout():
             fig.savefig(self.rootname+'_chan.png', dpi = 300)
 
 
-        # compare output lists. TODO: test
+        # compare output lists.
+        ### FIXME: What do we want a failed case to do?
 
         rtol = 2.0 # relative tolerance magnitude
         atol = 1.9 # absolute tolerance magnitude
@@ -601,7 +602,7 @@ class run_infile():
         MDStepParams = (1, "x"), (1, "xd"), (2, "f"), (1, "t"), (1, "dtC") 
 
         # lib_path = '../build/source/libmoordyn.dylib'# FIXME: Fix if needed: path to MD-C compiled library. 
-        lib_path = '../compile/DYLIB/libmoordyn2.dylib' #CMake is not currently working for me (Ryan) on most recent dev branch, so using  old method
+        lib_path = '../compile/DYLIB/libmoordyn2.dylib' # CMake is not currently working for me (Ryan) on most recent dev branch, so using old method
 
         MDlib = ctypes.CDLL(lib_path) #load moordyn dylib
 
@@ -699,7 +700,7 @@ class run_infile():
 
 # FIXME: Does GH actions automatically delete the MD output files? If not then we need to handle that here
 
-# NOTE: @Pepe the FIXME's are where paths will need to be adjusted from what they are locally for me, and if we want to save figures/out files. 
+# NOTE: @Pepe please address FIXME's
 
 # NOTE: @Pepe I used os.system() with Unix scripts for file handling and calling the driver. I can change to generalize for all OS but this was easier for now.
 

@@ -1,4 +1,4 @@
-Case from feburary tank testing. Vertical spar buoy with two catenary mooring chains. 
+Case from feburary tank testing. Vertical spar buoy with two catenary mooring chains. Coupled to test coupled motion. 
 ---------------------- LINE TYPES --------------------------------------------------
 TypeName      Diam     Mass/m     EA     BA/-zeta     EI        Cd      Ca      CdAx    CaAx
 (name)        (m)      (kg/m)     (N)    (N-s/-)    (N-m^2)     (-)     (-)     (-)     (-)
