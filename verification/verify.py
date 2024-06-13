@@ -2,6 +2,7 @@ import ctypes
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import moordyn
 
 def f_compile(run_files = []):
 
@@ -629,6 +630,24 @@ class run_infile():
         MDClose()   
 
         del MDlib
+
+        out_file = self.rootname+'.out'
+        new_file = self.rootname+'C'+'.out'
+        os.system(f'cp {out_file} {new_file}') # rename file for reading in comparison
+
+    def run_Cpy (self): 
+
+        # Currently unused
+
+        system = moordyn.Create(self.path+self.rootname+"Cpy"+self.extension)
+        moordyn.Init(system, self.x[0,:], self.xd[0,:])
+        # loop through coupling time steps
+        for i in range(len(self.time)):
+            # call the MoorDyn step function
+            moordyn.Step(system, self.x[i,:], self.xd[i,:], self.time[i], self.dtC)    #force value returned here in array
+
+        # close MoorDyn simulation (clean up the internal memory, hopefully) when finished
+        moordyn.Close(system)   
 
         out_file = self.rootname+'.out'
         new_file = self.rootname+'C'+'.out'
