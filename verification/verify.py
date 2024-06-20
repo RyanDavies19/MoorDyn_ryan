@@ -49,8 +49,6 @@ def read_mooring_file(fileName):
                 
                 for entry in line2.split():      # loop over the elemets, split by whitespace
                     if '***' in entry:
-                        if printed == False:
-                            printed = True
                         entry = 0.0   
                     data[-1].append(entry)      # append to the last element of the list
                 
