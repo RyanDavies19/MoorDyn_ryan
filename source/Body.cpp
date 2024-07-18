@@ -560,8 +560,10 @@ Body::doRHS()
 
 	// Centrifugal force due to COM not being at body origin
 	const vec w = v6.tail<3>();
-	F6net.head<3>() -=
-		M.topLeftCorner(3, 3) * (w.cross(w.cross(body_rCGrotated)));
+	const vec Fcentripetal = -M.topLeftCorner(3, 3) * (w.cross(w.cross(body_rCGrotated)));
+	F6net.head<3>() += Fcentripetal;
+	// centripetal moment and gyroscopic term
+	F6net.tail<3>() += body_rCGrotated.cross(Fcentripetal) - w.cross(M.bottomRightCorner<3,3>()*w);
 
 	// --------------------------------- apply wave kinematics
 	// ------------------------------------

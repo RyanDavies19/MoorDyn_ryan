@@ -311,10 +311,15 @@ Point::getNetForceAndMass(vec6& Fnet_out, mat6& M_out, vec rBody, vec6 vBody)
 	Fnet_out(Eigen::seqN(0, 3)) = Fnet;
 	Fnet_out(Eigen::seqN(3, 3)) = rRel.cross(Fnet);
 	// add the centripetal force
-	Fnet_out(Eigen::seqN(0, 3)) += getCentripetalForce(rBody, vBody.tail<3>());
+	const vec Fcentripetal = getCentripetalForce(rRel, vBody.tail<3>());
+	Fnet_out(Eigen::seqN(0, 3)) += Fcentripetal;
 
 	// convert segment mass matrix to 6by6 mass matrix about body ref point
 	M_out = translateMass(rRel, M);
+
+	// centripetal moment and gyroscopic term
+	Fnet_out(Eigen::seqN(3, 3)) += rRel.cross(Fcentripetal) - vBody.tail<3>().cross(M_out.bottomRightCorner<3,3>()*vBody.tail<3>());
+
 }
 
 moordyn::error_id

@@ -430,7 +430,7 @@ class Point final : public io::IO, public SuperCFL
 	 */
 	inline vec getCentripetalForce(vec r, vec w) const
 	{
-		return -M * (w.cross(w.cross(this->r - r)));
+		return -M * (w.cross(w.cross(r)));
 	}
 
 };

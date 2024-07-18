@@ -168,6 +168,8 @@ class Rod final : public io::IO, public SuperCFL
 	vec6 F6net;
 	/// total mass matrix about end A of Rod and any attached Points
 	mat6 M6net;
+	/// Rod moment of inertia matrix about the COG (no parallel axis terms)
+	mat Imat;
 
 	// forces
 	/// node dry weights
@@ -611,23 +613,23 @@ class Rod final : public io::IO, public SuperCFL
 	void saveVTK(const char* filename) const;
 #endif
 
-  private:
-	/** @brief Calculate the centripetal force on a body
-	 * @param r The body position
-	 * @param w The body angular velocity
-	 * @return Centripetal force on the body
-	 */
-	inline vec getCentripetalForce(vec r, vec w) const
-	{
-		if (!N)
-			return vec::Zero();
+//   private:
+// 	/** @brief Calculate the centripetal force on a body
+// 	 * @param r The body position
+// 	 * @param w The body angular velocity
+// 	 * @return Centripetal force on the body
+// 	 */
+// 	inline vec getCentripetalForce(vec r, vec w) const
+// 	{
+// 		if (!N)
+// 			return vec::Zero();
 
-		vec F = vec::Zero();
-		for (unsigned int i = 0; i <= N; i++) {
-			F -= M[i] * (w.cross(w.cross(this->r[i] - r)));
-		}
-		return F;
-	}
+// 		vec F = vec::Zero();
+// 		for (unsigned int i = 0; i <= N; i++) {
+// 			F -= M[i] * (w.cross(w.cross(r)));
+// 		}
+// 		return F;
+// 	}
 
 
 };

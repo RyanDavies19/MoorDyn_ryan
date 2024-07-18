@@ -765,11 +765,24 @@ Rod::getNetForceAndMass(vec6& Fnet_out, mat6& M_out, vec rRef, vec6 vRef)
 	// shift net forces and add the existing moments
 	const vec f3net = F6net(Eigen::seqN(0, 3));
 	Fnet_out(Eigen::seqN(3, 3)) = F6net(Eigen::seqN(3, 3)) + rRel.cross(f3net);
-	// add the centripetal force
-	Fnet_out(Eigen::seqN(0, 3)) += getCentripetalForce(rRef, vRef.tail<3>());
 
 	// shift mass matrix to be about ref point
 	M_out = translateMass6(rRel, M6net);
+
+
+	if (rRel.norm() > 0.0) {// In the case where rRel is zero, this is called at rod end A where the centriptal forces about that point have been accounted for in doRHS
+		// Add in the centripetal force and moment on the body. These are valid when referring to the rods COG, hence the reference vector is r_c+rRel. 
+		// Note that this is centripetal force/moment and gyroscopic term from the rods COG to body while the rod mass and f6 are from end A to body. 
+		const double h_c = 0.5*UnstrLen;          // distance to center of mass
+		const vec r_c = h_c*q;                // vector to center of mass
+		const mat6 I_out = translateMass(r_c+rRel, Imat); // translate the COG inertia matrix (no parallel axis terms) about the body ref point
+		
+		const vec Fcentripetal = - M6net.topRightCorner<3,3>() * vRef.tail<3>().cross(vRef.tail<3>().cross(r_c+rRel)); // replaced get centripetal force for now
+		const vec Mcentripetal = (r_c+rRel).cross(Fcentripetal) - vRef.tail<3>().cross(I_out.bottomRightCorner<3,3>() * vRef.tail<3>());
+
+		Fnet_out(Eigen::seqN(0, 3)) += Fcentripetal;
+		Fnet_out(Eigen::seqN(3, 3)) += Mcentripetal;
+	}
 
 	// >>> do we need to ensure zero moment is passed if it's pinned? <<<
 	// if (abs(Rod%typeNum)==1) then
@@ -1335,31 +1348,24 @@ Rod::doRHS()
 	// get rotation matrix to put things in global rather than rod-axis
 	// orientations
 	const mat OrMat = RotZ(beta) * RotY(phi);
-	const mat Imat = rotateMass(OrMat, Imat_l);
+	Imat = rotateMass(OrMat, Imat_l);
 	// these supplementary inertias can then be added the matrix (these are the
 	// terms ASIDE from the parallel axis terms)
 	M6net.bottomRightCorner<3, 3>() += Imat;
 
-	// now add centripetal and gyroscopic forces/moments, and that should be
-	// everything
-	/*
-	double h_c = 0.5*UnstrLen;          // distance to center of mass
-	double r_c[3];
-	for (int J=0; J<3; J++)
-	    r_c[J] = h_c*q[J];                 // vector to center of mass
+	// now add centripetal and gyroscopic forces/moments, and any moments applied
+	// from lines at either end (might be zero). that should be everything
 
-	// note that Rod%v6(4:6) is the rotational velocity vector, omega
-	for (int J=0; J<3; J++)
-	{	Fcentripetal[J] = 0.0; //<<<TEMP<<< -cross_product(Rod%v6(4:6),
-	cross_product(Rod%v6(4:6), r_c ))*Rod%mass <<< Mcentripetal[J] = 0.0;
-	//<<<TEMP<<< cross_product(r_c, Fcentripetal) - cross_product(Rod%v6(4:6),
-	MATMUL(Imat,Rod%v6(4:6)))
-	}
-	*/
+	const double h_c = 0.5*UnstrLen;          // distance to center of mass
+    const vec r_c = h_c*q;                 //vector to center of mass
+      
+    // note that Rod%v6(4:6) is the rotational velocity vector, omega   
+    const vec Fcentripetal = -v6.tail<3>().cross(v6.tail<3>().cross(r_c))*mass;
+    const vec Mcentripetal = r_c.cross(Fcentripetal) - v6.tail<3>().cross(Imat * v6.tail<3>());
 
-	// add centripetal force/moment, gyroscopic moment, and any moments applied
-	// from lines at either end (might be zero)
-	F6net.tail<3>() += Mext; // + Mcentripetal
+    // add centripetal force/moment, gyroscopic moment, and any moments applied from lines at either end (might be zero)
+    F6net.head<3>() += Fcentripetal; 
+    F6net.tail<3>() += Mcentripetal + Mext;
 
 	// NOTE: F6net saves the Rod's net forces and moments (excluding inertial
 	// ones) for use in later output
