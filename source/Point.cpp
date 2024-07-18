@@ -318,7 +318,7 @@ Point::getNetForceAndMass(vec6& Fnet_out, mat6& M_out, vec rBody, vec6 vBody)
 	M_out = translateMass(rRel, M);
 
 	// centripetal moment and gyroscopic term
-	Fnet_out(Eigen::seqN(3, 3)) += rRel.cross(Fcentripetal) - vBody.tail<3>().cross(M_out.bottomRightCorner<3,3>()*vBody.tail<3>());
+	Fnet_out(Eigen::seqN(3, 3)) += - vBody.tail<3>().cross(M_out.bottomRightCorner<3,3>()*vBody.tail<3>());
 
 }
 

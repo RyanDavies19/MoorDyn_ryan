@@ -778,7 +778,7 @@ Rod::getNetForceAndMass(vec6& Fnet_out, mat6& M_out, vec rRef, vec6 vRef)
 		const mat6 I_out = translateMass(r_c+rRel, Imat); // translate the COG inertia matrix (no parallel axis terms) about the body ref point
 		
 		const vec Fcentripetal = - M6net.topRightCorner<3,3>() * vRef.tail<3>().cross(vRef.tail<3>().cross(r_c+rRel)); // replaced get centripetal force for now
-		const vec Mcentripetal = (r_c+rRel).cross(Fcentripetal) - vRef.tail<3>().cross(I_out.bottomRightCorner<3,3>() * vRef.tail<3>());
+		const vec Mcentripetal = - vRef.tail<3>().cross(I_out.bottomRightCorner<3,3>() * vRef.tail<3>());
 
 		Fnet_out(Eigen::seqN(0, 3)) += Fcentripetal;
 		Fnet_out(Eigen::seqN(3, 3)) += Mcentripetal;
